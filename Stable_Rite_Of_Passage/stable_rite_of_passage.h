@@ -16,9 +16,7 @@ public:
 	DWORD FindThreadForHijacking();
 	DWORD CreateSharedSectionWithPayload();
 	PVOID CreateSharedSection();
-
 	DWORD CreateROP();
-
 	DWORD Start();
 
 };

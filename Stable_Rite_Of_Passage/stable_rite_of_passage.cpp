@@ -5,12 +5,12 @@ DWORD srop_class::FindThreadForHijacking() {
 	HANDLE hThreadSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, this->data->remote_thread_info.processId);
 
 	if (hThreadSnapshot == NULL) {
-		cout << "[+] Unable to get Snapshot handle" << endl;
+		cout << "[-] Unable to get Snapshot handle" << endl;
 		return 0;
 	}
 
 	if (!Thread32First(hThreadSnapshot, &thread32)) {
-		cout << "[+] Unable to get first thread from process snapshot" << endl;
+		cout << "[-] Unable to get first thread from process snapshot" << endl;
 		return 0;
 	}
 
@@ -48,7 +48,7 @@ PVOID srop_class::CreateSharedSection() {
 
 	if (hLocalSection == NULL) {
 
-		cout << "[+] CreateFileMappingA error: " << GetLastError() << endl;
+		cout << "[-] CreateFileMappingA error: " << GetLastError() << endl;
 		return NULL;
 	}
 
@@ -61,7 +61,7 @@ PVOID srop_class::CreateSharedSection() {
 
 	if (address == NULL) {
 
-		cout << "[+] MapViewOfFile error: " << GetLastError() << endl;
+		cout << "[-] MapViewOfFile error: " << GetLastError() << endl;
 		return NULL;
 	}
 
@@ -75,7 +75,7 @@ PVOID srop_class::CreateSharedSection() {
 		DUPLICATE_SAME_ACCESS);
 
 	if (!success) {
-		cout << "[+] Unable to duplicate handles, error: " << GetLastError() << endl;
+		cout << "[-] Unable to duplicate handles, error: " << GetLastError() << endl;
 		return NULL;
 	}
 
@@ -121,7 +121,7 @@ DWORD srop_class::CreateSharedSectionWithPayload() {
 	LPVOID address = this->CreateSharedSection();
 
 	if (address == NULL) {
-		cout << "[+] Creating shared Section failed" << endl;
+		cout << "[-] Creating shared Section failed" << endl;
 		return 0;
 	}
 
@@ -148,7 +148,7 @@ DWORD srop_class::CreateROP() {
 																														5:  41 59			        pop    r9
 																														7:  41 5a			        pop    r10
 																														9:  41 5b			        pop    r11
-																														10: c3						ret					*/
+																														11: c3						ret					*/
 
 	HMODULE hModuleNtdll = GetModuleHandle(L"ntdll");
 
@@ -362,7 +362,7 @@ DWORD srop_class::Start() {
 	cout << "[+] Looking in process " << this->data->remote_thread_info.processId << " for a thread to hijack" << endl;
 
 	if (!this->FindThreadForHijacking()) {
-		cout << "[+] Unable to find a thread to hijack\n" << EXIT_PROGRAM_COMMENT << endl;
+		cout << "[-] Unable to find a thread to hijack\n" << EXIT_PROGRAM_COMMENT << endl;
 		return 0;
 	}
 
@@ -377,7 +377,7 @@ DWORD srop_class::Start() {
 	BOOL success = GetThreadContext(this->data->remote_thread_info.hThread, &ctx);
 
 	if (!success) {
-		cout << "[+] Unable to get thread context\n" << EXIT_PROGRAM_COMMENT << endl;
+		cout << "[-] Unable to get thread context\n" << EXIT_PROGRAM_COMMENT << endl;
 		return 0;
 	}
 
